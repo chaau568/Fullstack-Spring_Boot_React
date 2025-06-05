@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import learn_basic.to_do_list.autoTranferEntity.NameResponse;
 
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = "http://localhost:5173")
 @RestController
 @RequestMapping("/todo")
 
