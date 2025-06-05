@@ -1,34 +1,20 @@
-import { useState } from 'react'
+// App.jsx
+import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom'
 import './App.css'
+import Hello from './hello/Hello'
 
 function App() {
-  const [msg, setMsg] = useState('')
-
-  const handleFetch = () => {
-    const input = document.getElementById('message').value;
-    if (input.trim() === '') return;
-    const data = {
-      message : input
-    }
-    fetch('http://localhost:8080/todo/hello', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(data)
-    })
-      .then(res => res.json())
-      .then(data => setMsg(data.message))
-      .catch(error => console.error("Error fetching:", error))
-  }
-
   return (
-    <>
-      <h1>Here is frontend</h1>
-      <input id='message' type='text' placeholder="Enter your name" />
-      <button onClick={handleFetch}>Send</button>
-      <h1>{msg}</h1>
-    </>
+    <Router>
+      <nav>
+        <Link to="/">Home</Link>
+        <Link to="/hello">Hello</Link>
+      </nav>
+      <Routes>
+        <Route path="/" element={<h1>Welcome Home</h1>} />
+        <Route path="/hello" element={<Hello />} />
+      </Routes>
+    </Router>
   )
 }
 
