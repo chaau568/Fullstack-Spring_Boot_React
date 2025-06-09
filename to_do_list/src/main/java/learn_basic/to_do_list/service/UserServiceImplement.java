@@ -3,21 +3,19 @@ package learn_basic.to_do_list.service;
 import java.util.List;
 import java.util.Optional;
 
+import javax.management.RuntimeErrorException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.SecurityProperties.User;
 import org.springframework.stereotype.Service;
 
 import learn_basic.to_do_list.entity.UserEntity;
 import learn_basic.to_do_list.repository.UserRepository;
+import learn_basic.to_do_list.returnStatusCode.UserExceptionStatus;
 
 @Service
 
 public class UserServiceImplement implements UserService {
-    // private final UserRepository userRepository;
-    
-    // public UserServiceImplement(UserRepository userRepository) {
-    //     this.userRepository = userRepository;
-    // }
 
     @Autowired
     private UserRepository userRepository;
@@ -37,43 +35,43 @@ public class UserServiceImplement implements UserService {
     }
 
     @Override
-    public UserEntity createUser(UserEntity user) {
-        if (user.getUsername() == null || user.getUsername().isEmpty()) {
-            throw new IllegalArgumentException("Username cannot be null or empty");
+    public void createUser(UserEntity user) {
+        if (user.getUsername().isEmpty() || user.getUsername().isEmpty()) {
+            throw new UserExceptionStatus("Username cannot be null or empty");
         }
 
         Optional<UserEntity> existingUser = userRepository.findByUsername(user.getUsername());
         if (existingUser.isPresent()) {
-            throw new IllegalArgumentException("Username already exists");
+            throw new UserExceptionStatus("Username already exists");
         }
-        return userRepository.save(user);
+        userRepository.save(user);
     }
 
     @Override
-    public UserEntity updateUser(String id, UserEntity user) {
-       if (userRepository.findById(id).isPresent()) {
-        return userRepository.save(user);
+    public void updateUser(String newUsername, String newPassword, UserEntity user) {
+       if (user.getId().isEmpty() || user.getUsername().isEmpty() || user.getPassword().isEmpty()) {
+            throw new UserExceptionStatus("Username or Password cannot be null or empty");
        }
-       throw new RuntimeException("User not found with id: " + id);
+       Optional<UserEntity> compareUser = userRepository.findById(user.getId());
+       if (compareUser.isPresent()) {
+            UserEntity newUser = compareUser.get();
+            newUser.setUsername(newUsername);
+            newUser.setPassword(newPassword);
+            userRepository.save(newUser);
+       }
+       else {
+        throw new UserExceptionStatus("User not found with id: " + user.getId());
+       }
     }
 
     @Override
     public void deleteUser(String id) {
        if (userRepository.findById(id).isPresent()) {
-        userRepository.deleteById(id);
+            userRepository.deleteById(id);
        }
        else {
-        throw new RuntimeException("User not found with id: " + id);
+            throw new UserExceptionStatus("User not found with id: " + id);
        }
-    }
-
-    @Override
-    public UserEntity findByUsername(String username) {
-        Optional<UserEntity> user = userRepository.findByUsername(username);
-        if (user.isPresent()) {
-            return user.get();
-        }
-        throw new RuntimeException("User not found with username: " + username);
     }
 
 }

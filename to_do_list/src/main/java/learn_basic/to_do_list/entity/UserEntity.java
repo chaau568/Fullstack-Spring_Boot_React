@@ -9,14 +9,20 @@ public class UserEntity {
     private String id;
     private String username;
     private String password;
-    private boolean completed;
 
     public UserEntity() {}
 
-    public UserEntity(String username, String password, boolean completed) {
+    public UserEntity(String username, String password) {
         this.username = username;
         this.password = password;
-        this.completed = completed;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getId() {
+        return id;
     }
 
     public void setUsername(String username) {
@@ -33,13 +39,5 @@ public class UserEntity {
 
     public String getPassword() {
         return password;
-    }
-
-    public void setCompleted(boolean completed) {
-        this.completed = completed;
-    }
-
-    public boolean isCompleted() {
-        return completed;
     }
 }
